@@ -27,16 +27,21 @@ public class EnemyAI : MonoBehaviour
     public float attackDist = 5.0f;
     //추적 사정거리
     public float traceDist = 10.0f;
-
+    
     //사망 여부를 판단할 변수
     public bool isDie = false;
     //코루틴에서 사용할 지연시간 변수
     private WaitForSeconds ws;
     //이동을 제어하는 MoveAgent 클래스를 저장할 변수
     private MoveAgent moveAgent;
+    //총알 발사를 제어하는 EnemyFire 클래스를 저장할 변수
+    private EnemyFire EnemyFire;
+    
     //애니메이터 컨트롤러에 정의한파라미터의 해시값을 미리 추출
     private readonly int hashMove = Animator.StringToHash("IsMove");
     private readonly int hashSpeed = Animator.StringToHash("Speed");
+    private readonly int hashDie = Animator.StringToHash("Die");
+    private readonly int hashDieIdx = Animator.StringToHash("DieIdx");
     
 
 
@@ -56,6 +61,9 @@ public class EnemyAI : MonoBehaviour
 
         //Animator 컴포넌트 추출
         animator = GetComponent<Animator>();
+
+        //총알 발사를 제어하는 EnemyFire 클래스를 추출
+        EnemyFire = GetComponent<EnemyFire>();
         //코루틴의 지연시간 생성
         ws = new WaitForSeconds(0.3f);
     }
@@ -106,11 +114,16 @@ public class EnemyAI : MonoBehaviour
             switch(state)
             {
                 case State.PATROL:
+                    //총알 발사 정지
+                    EnemyFire.isFire = false;
                     //순찰 모드를 활성화
                     moveAgent.patroliing = true;
                     animator.SetBool(hashMove, true);
                     break;
                 case State.TRACE:
+                    //총알 발사 정지
+                    EnemyFire.isFire = false;
+
                     //주인공의 위치를 넘겨 추적모드로 변경
                     moveAgent.traceTarget = playerTr.position;
                     animator.SetBool(hashMove, true);
@@ -121,10 +134,24 @@ public class EnemyAI : MonoBehaviour
                     moveAgent.Stop();
                     animator.SetBool(hashMove, false);
 
+                    //총알 발사 시작
+                    if (EnemyFire.isFire == false)
+                        EnemyFire.isFire = true;
+                    
+                    
+
                     break;
                 case State.DIE:
+                    isDie = true;
+                    EnemyFire.isFire = false;
                     //순찰 및 추적을 정리
                     moveAgent.Stop();
+                    //사망 애니메이션의 종류를 지정
+                    animator.SetInteger(hashDieIdx, UnityEngine.Random.Range(0, 3));
+                    //사망 애니메이션 실행
+                    animator.SetTrigger(hashDie);
+                    //Capsule Collider  컴포넌트를 비활성화
+                    GetComponent<CapsuleCollider>().enabled = false;
                     break;
 
             }
