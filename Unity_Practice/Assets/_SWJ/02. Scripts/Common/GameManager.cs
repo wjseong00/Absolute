@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
+    [Header("Enemy Create Info")]
     //적 캐릭터가 출현할 위치를 담을 배열
     public Transform[] points;
     //적 캐릭터 프리팹을 저장할 변수
@@ -14,7 +15,34 @@ public class GameManager : MonoBehaviour
     public int maxEnemy = 10;
     //게임 종료 여부를 판단할 변수
     public bool isGameOver = false;
+    
+    //싱글톤에 접근하기 위한 Static 변수 선언
+    public static GameManager instance = null;
 
+    [Header("Object Pool")]
+    //생설할 총알 프리팹
+    public GameObject bulletPrefab;
+    //오프젝트 풀에 생성할 개수
+    public int maxPool = 10;
+    public List<GameObject> bulletPool = new List<GameObject>();
+
+    private void Awake()
+    {
+        if(instance==null)
+        {
+            instance = this;
+        }
+        //instance에 할당된 클래스의 인스턴스가 다를 경우 새로 생성된 클래스를 의미함
+        else if(instance !=this)
+        {
+            Destroy(this.gameObject);
+        }
+
+        //다른 씬으로 넘어가더라도 삭제하지 않고 유지함
+        DontDestroyOnLoad(this.gameObject);
+        //오브젝트 풀링 생성함수 호출
+        CreatePolling();
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -54,12 +82,37 @@ public class GameManager : MonoBehaviour
             }
         }
     }
-
-
-
-    // Update is called once per frame
-    void Update()
+    //오브젝트 풀에서 사용 가능한 총알을 가져오는 함수
+    public GameObject GetBullet()
     {
-        
+        for (int i = 0; i < bulletPool.Count; i++)
+        {
+            //비활성화 여부로 사용 가능한 총알인지를 판단
+            if(bulletPool[i].activeSelf==false)
+            {
+                return bulletPool[i];
+            }
+        }
+        return null;
     }
+
+    //오브젝트 풀에 총알을 생성하는 함수
+    public void CreatePolling()
+    {
+        //총알을 생성해 차일드화할 페어런트 게임오브젝트를 생성
+        GameObject objectPools = new GameObject("ObjectPools");
+
+        //풀링 개수만큼 미리 총알을 생성
+        for (int i = 0; i < maxPool; i++)
+        {
+            var obj = Instantiate<GameObject>(bulletPrefab, objectPools.transform);
+            obj.name = "Bullet_" + i.ToString("00");
+            //비활성화
+            obj.SetActive(false);
+            //리스트에 생성한 총알 추가
+            bulletPool.Add(obj);
+        }
+    }
+
+    
 }

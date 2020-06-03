@@ -1759,6 +1759,10 @@ MonoBehaviour:
   createTime: 2
   maxEnemy: 10
   isGameOver: 0
+  bulletPrefab: {fileID: 3254311610855399193, guid: 77491680df0a69e4da48b924bc052d4d,
+    type: 3}
+  maxPool: 10
+  bulletPool: []
 --- !u!4 &920006973
 Transform:
   m_ObjectHideFlags: 0

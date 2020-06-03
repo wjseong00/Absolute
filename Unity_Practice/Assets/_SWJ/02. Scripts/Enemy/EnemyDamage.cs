@@ -23,7 +23,8 @@ public class EnemyDamage : MonoBehaviour
             //혈흔 효과를 생성하는 함수 호출
             ShowBloodEffect(coll);
             //총알 삭제
-            Destroy(coll.gameObject);
+            // Destroy(coll.gameObject);
+            coll.gameObject.SetActive(false);
             //생명 게이지 차감
             hp -= coll.gameObject.GetComponent<BulletCtrl>().damage;
             if(hp<=0.0f)
