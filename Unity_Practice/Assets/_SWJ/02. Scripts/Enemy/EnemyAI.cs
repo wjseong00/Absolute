@@ -155,6 +155,7 @@ public class EnemyAI : MonoBehaviour
 
                     break;
                 case State.DIE:
+                    this.gameObject.tag = "Untagged";
                     isDie = true;
                     EnemyFire.isFire = false;
                     //순찰 및 추적을 정리
