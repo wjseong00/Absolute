@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 3254311610855399198}
   - component: {fileID: 4159492326130328892}
   - component: {fileID: 1987715088}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Bullet
   m_TagString: BULLET
   m_Icon: {fileID: 0}
@@ -63,7 +63,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c7e07d9e61dbe8e4bb1c0948a9381f50, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damege: 20
+  damage: 20
   speed: 1000
 --- !u!135 &4159492326130328892
 SphereCollider:

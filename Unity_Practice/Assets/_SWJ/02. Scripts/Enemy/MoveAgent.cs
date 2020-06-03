@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 //네비게이션 기능을 사용하기 위해 추가해야 하는 네임스페이스
@@ -83,6 +82,9 @@ public class MoveAgent : MonoBehaviour
             group.GetComponentsInChildren<Transform>(wayPoints);
             //배열의 첫 번째 항목 삭제
             wayPoints.RemoveAt(0);
+
+            //첫 번째로 이동할 위치를 불규칙하게 추출
+            nextIdx = Random.Range(0, wayPoints.Count);
         }
         //MoveWayPoint();
         this._patrolliing = true;
@@ -132,7 +134,8 @@ public class MoveAgent : MonoBehaviour
         if(agent.velocity.sqrMagnitude >= 0.2f*0.2f && agent.remainingDistance<=0.5f)
         {
             //다음 목적지의 배열 첨자를 계산
-            nextIdx = ++nextIdx % wayPoints.Count;
+            //nextIdx = ++nextIdx % wayPoints.Count;
+            nextIdx = Random.Range(0, wayPoints.Count);
             //다음 목적지로 이동 명령을 수행
             MoveWayPoint();
         }
