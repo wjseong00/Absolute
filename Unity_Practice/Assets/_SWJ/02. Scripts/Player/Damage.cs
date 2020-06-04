@@ -23,10 +23,22 @@ public class Damage : MonoBehaviour
     public delegate void PlayerDieHandler();
     public static event PlayerDieHandler OnPlayerDie;
 
+    private void OnEnable()
+    {
+        GameManager.OnItemChange += UpdateSetup;
 
+    }
+
+    void UpdateSetup()
+    {
+        initHp = GameManager.instance.gameData.hp;
+        currHp += GameManager.instance.gameData.hp - currHp;
+    }
     // Start is called before the first frame update
     void Start()
     {
+        //불러온 데이터 값을 Hp에 적용
+        initHp = GameManager.instance.gameData.hp;
         currHp = initHp;
 
         hpBar.color = initColor;

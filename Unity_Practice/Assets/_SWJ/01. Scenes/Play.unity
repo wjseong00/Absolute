@@ -3403,6 +3403,7 @@ GameObject:
   m_Component:
   - component: {fileID: 920006973}
   - component: {fileID: 920006972}
+  - component: {fileID: 920006974}
   m_Layer: 0
   m_Name: GameMgr
   m_TagString: Untagged
@@ -3432,14 +3433,13 @@ MonoBehaviour:
   maxPool: 10
   bulletPool: []
   inventoryCG: {fileID: 534873210}
-  killCount: 0
   killCountTxt: {fileID: 366244865}
-  gameData:
-    killCount: 0
-    hp: 120
-    damage: 25
-    speed: 6
-    equipItem: []
+  gameData: {fileID: 11400000, guid: d8a6e8d05c122a840b5bbee275d25c7e, type: 2}
+  itemObjects:
+  - {fileID: 389264180}
+  - {fileID: 1727460543}
+  - {fileID: 742985072}
+  - {fileID: 1329993098}
 --- !u!4 &920006973
 Transform:
   m_ObjectHideFlags: 0
@@ -3454,6 +3454,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &920006974
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 920006971}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd6ee3467cafd99418f48de8ab07fd91, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &938032108
 PrefabInstance:
   m_ObjectHideFlags: 0

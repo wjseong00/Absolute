@@ -20,13 +20,21 @@ public class BulletCtrl : MonoBehaviour
         tr = GetComponent<Transform>();
         rb = GetComponent<Rigidbody>();
         trail = GetComponent<TrailRenderer>();
+
+        //불러온 데이터 값을 damege에 적용
+        damage = GameManager.instance.gameData.damage;
     }
 
     private void OnEnable()
     {
         rb.AddForce(transform.forward * speed);
+        GameManager.OnItemChange += UpdateSetup;
     }
 
+    void UpdateSetup()
+    {
+        damage = GameManager.instance.gameData.damage;
+    }
     private void OnDisable()
     {
         //재활용된 총알의 여러 효과값을 초기화
