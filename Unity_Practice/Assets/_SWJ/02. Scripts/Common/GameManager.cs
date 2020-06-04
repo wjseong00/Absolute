@@ -1,7 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.UI;
+//GameData, Item 클래스가 담긴 네임스페이스 명시
+using DataInfo;
 public class GameManager : MonoBehaviour
 {
     [Header("Enemy Create Info")]
@@ -26,6 +28,21 @@ public class GameManager : MonoBehaviour
     public int maxPool = 10;
     public List<GameObject> bulletPool = new List<GameObject>();
 
+    //일시 정지 여부를 판단하는 변수
+    private bool isPaused;
+
+    //Inventory의 CanvasGroup 컴포넌트를 저장할 변수
+    public CanvasGroup inventoryCG;
+
+    //주인공이 죽인 적 캐릭터의 수
+    [HideInInspector] public int killCount;
+    //적 캐릭터를 죽인 횟수를 표시할 텍스트 UI
+    public Text killCountTxt;
+
+    //DataManager 를 저장할 변수
+    private DataManager dataManager;
+    public GameData gameData;
+
     private void Awake()
     {
         if(instance==null)
@@ -40,13 +57,39 @@ public class GameManager : MonoBehaviour
 
         //다른 씬으로 넘어가더라도 삭제하지 않고 유지함
         DontDestroyOnLoad(this.gameObject);
+
+        //DataManager를 추출해 저장
+        dataManager = GetComponent<DataManager>();
+        //DataManager 초기화
+        dataManager.Initialize();
+
+        LoadGameData();
         //오브젝트 풀링 생성함수 호출
         CreatePolling();
+    }
+
+    private void LoadGameData()
+    {
+        //DataManager 를 통해 파일에 저장된 데이터 불러오기
+        GameData data = dataManager.Load();
+
+        gameData.hp = data.hp;
+        gameData.damage = data.damage;
+        gameData.speed = data.speed;
+        gameData.killCount = data.killCount;
+        gameData.equipItem = data.equipItem;
+        
+        
+
+        //KILL_COUNT 키로 저장된 값을로드
+        //killCount = PlayerPrefs.GetInt("KILL_COUNT", 0);
+        //killCountTxt.text = "KILL " + killCount.ToString("0000");
     }
 
     // Start is called before the first frame update
     void Start()
     {
+        OnInventoryOpen(false);
         //하이러키 뷰의 SpawnPointGroup 을 찾아 하위에 있는 모든 Transform 컴포넌트를 찾아옴
         points = GameObject.Find("SpawnPointGroup").GetComponentsInChildren<Transform>();
 
@@ -54,6 +97,13 @@ public class GameManager : MonoBehaviour
         {
             StartCoroutine(this.CreateEnemy());
         }
+    }
+    //인벤토리를 활성화/비활성화하는 함수
+    public void OnInventoryOpen(bool isOpened)
+    {
+        inventoryCG.alpha = (isOpened) ? 1.0f : 0.0f;
+        inventoryCG.interactable = isOpened;
+        inventoryCG.blocksRaycasts = isOpened;
     }
 
     //적 캐릭터를 생성하는 코루틴 함수
@@ -114,5 +164,33 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    //일시 정지 버튼 클릭 시 호출할 함수
+    public void OnPauseClick()
+    {
+        //일시 정지 값을 토글시킴
+        isPaused = !isPaused;
+        //Time Scale이 0이면 정지, 1이면 정상 속도
+        Time.timeScale = (isPaused) ? 0.0f : 1.0f;
+        //주인공 객체를 추출
+        var playerObj = GameObject.FindGameObjectWithTag("PLAYER");
+        //주인공 캐릭터에추가된 모든 스크립트를 추출함
+        var scripts = playerObj.GetComponents<MonoBehaviour>();
+        //주인공 캐릭터의 모든 스크립트를 활성화/비활성화
+        foreach(var script in scripts)
+        {
+            script.enabled = !isPaused;
+        }
+        var canvasGroup = GameObject.Find("Panel - Weapon").GetComponent<CanvasGroup>();
+        canvasGroup.blocksRaycasts = !isPaused;
+    }
     
+    //적 캐릭터가 죽을 때마다 호출될 함수
+    public void IncKillCount()
+    {
+        ++gameData.killCount;
+        killCountTxt.text = "KILL " + gameData.killCount.ToString("0000");
+        //죽인 횟수를 저장
+        //PlayerPrefs.SetInt("KILL_COUNT", killCount);
+    }
+
 }
