@@ -59,7 +59,7 @@ public class MoveAgent : MonoBehaviour
     {
         get { return agent.velocity.magnitude; }
     }
-
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -75,9 +75,10 @@ public class MoveAgent : MonoBehaviour
         agent.speed = patrolSpeed;
         //하이러키 뷰의 WayPointGroup 게임오브젝트를 추출
         var group = GameObject.Find("WayPointGroup");
+     
         if(group !=null)
         {
-            //WayPointGroup 하위에 있는 모든 Transform 컴포넌트를 추추한 후 
+            //WayPointGroup 하위에 있는 모든 Transform 컴포넌트를 추출한 후 
             //List 타입의 wayPoints 배열에 추가
             group.GetComponentsInChildren<Transform>(wayPoints);
             //배열의 첫 번째 항목 삭제
