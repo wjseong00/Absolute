@@ -17,11 +17,11 @@ TagManager:
   - UI
   - 
   - 
-  - Lighting
-  - Ground
-  - Postprocessing
+  - ENEMY
+  - OBSTACLE
+  - 
   - BARREL
-  - Player
+  - PLAYER
   - BULLET
   - E_BULLET
   - 
